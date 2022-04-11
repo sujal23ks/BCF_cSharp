@@ -46,12 +46,12 @@ namespace BCFProject
                 return rc2;
 
             string MaterialType = null;
-            Result rc3 = Rhino.Input.RhinoGet.GetString("Please Type the Material Type ", false, ref MaterialType);
+            Result rc3 = Rhino.Input.RhinoGet.GetString("Please Type the Material Type(Fins vuren/MDF/Ecoplex/Birch/OSB/Betonplex) ", false, ref MaterialType);
             if (rc3 != Rhino.Commands.Result.Success)
                 return rc3;
 
             string MaterialTk = null;
-            Result rc4 = Rhino.Input.RhinoGet.GetString("Please Type the Material Thickness ", false, ref MaterialTk);
+            Result rc4 = Rhino.Input.RhinoGet.GetString("Please Type the Material Thickness in mm ", false, ref MaterialTk);
             if (rc4 != Rhino.Commands.Result.Success)
                 return rc4;
          
@@ -71,6 +71,10 @@ namespace BCFProject
                 var Area = tmp.Area;
 
                 objrefs[i].Object().Attributes.SetUserString("Area", Area.ToString());
+
+                var partnumber = "Part"+ i.ToString();
+
+                objrefs[i].Object().Attributes.SetUserString("Partnumber", partnumber);
 
                 var layerIndex = doc.Layers.FindByFullPath("Cut", -1);
                 Rhino.RhinoDoc thisDoc = Rhino.RhinoDoc.ActiveDoc;
