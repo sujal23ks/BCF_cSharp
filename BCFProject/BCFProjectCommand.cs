@@ -72,16 +72,35 @@ namespace BCFProject
 
                 objrefs[i].Object().Attributes.SetUserString("Area", Area.ToString());
 
-                var partnumber = "Part"+ i.ToString();
+                var partnumber = "Part"+ (i+1).ToString();
 
                 objrefs[i].Object().Attributes.SetUserString("Partnumber", partnumber);
+
+                Curve c = objrefs[i].Curve();
+
+                Rhino.FileIO.SerializationOptions so = new Rhino.FileIO.SerializationOptions();
+                string json = c.ToJSON(so);
+
+               /* Dictionary<string, string> jsonDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                GeometryBase outthing = Rhino.Runtime.CommonObject.FromJSON(jsonDict);*/
+
+
+                // RhinoApp.WriteLine("json:{0}", json);
+                objrefs[i].Object().Attributes.SetUserString("serialisation", json);
+
+                
+                var areaMass = Rhino.Geometry.AreaMassProperties.Compute(c);
+                var centroid = areaMass.Centroid;
+
+                objrefs[i].Object().Attributes.SetUserString("centroid", centroid.ToString());
+
 
                 var layerIndex = doc.Layers.FindByFullPath("Cut", -1);
                 Rhino.RhinoDoc thisDoc = Rhino.RhinoDoc.ActiveDoc;
                 Rhino.DocObjects.ObjectAttributes myAtt = new Rhino.DocObjects.ObjectAttributes();
                 myAtt.LayerIndex = layerIndex;
-
-            }
+             
+           }
 
             return Result.Success;
         }
